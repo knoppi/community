@@ -6,8 +6,8 @@ MAINTAINER Jan Bundesmann <community@knofafo.de>
 
 RUN apk add --no-cache php5-ldap
 
-COPY language /phpbb/www/language
-COPY styles /phpbb/www/styles
+#COPY language /phpbb/www/language
+#COPY styles /phpbb/www/styles
 
 
 EXPOSE 80

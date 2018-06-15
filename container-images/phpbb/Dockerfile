@@ -1,10 +1,6 @@
-# Dockerfile for phpBB
-#
-
-#FROM php:5.6-apache
 FROM php:7.2-apache
+
 MAINTAINER Jan Bundesmann <community@knofafo.de>
-# My additions are not mentionwrothy
 
 RUN apt-get update && apt-get install -y curl unzip bzip2 libpq-dev libpng-dev libjpeg-dev libldap2-dev \
         && rm -rf /var/lib/apt/lists/* \
@@ -25,6 +21,7 @@ RUN curl -fSL ${PHPBB_URL} -o ${PHPBB_FILE} \
         && rm ${PHPBB_FILE} \
         && chown -R www-data:www-data .
 
+# At a later point I will separate installation- and production-image
 # RUN rm -R /var/www/html/install
 
 # German language pack

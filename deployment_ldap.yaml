@@ -1,0 +1,48 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+    name: ldap
+    labels:
+        app: ldap
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: ldap
+    template:
+        metadata:
+          name: ldap
+          labels:
+              app: ldap
+        spec:
+          volumes:
+            - name: ldap-config
+              persistentVolumeClaim:
+               claimName: claim-ldap-config
+            - name: ldap-data
+              persistentVolumeClaim:
+               claimName: claim-ldap-data
+          containers:
+            - name: ldap-container
+              image: beli/ldap
+              ports:
+                - containerPort: 389
+                  name: "ldap-server"
+              volumeMounts:
+                - mountPath: "/data"
+                  name: ldap-data
+                - mountPath: "/config"
+                  name: ldap-config
+              env:
+                - name: CONF_BASEDN
+                  value: "o=orklager"
+                - name: CONF_ROOTPW
+                  valueFrom:
+                      secretKeyRef:
+                          name: ldap-pass
+                          key: ldap-passwd
+              lifecycle:
+                  postStart:
+                      exec:
+                          command: ["chown", "104:107", "/data"]
+                          command: ["chown", "104:107", "/config"]

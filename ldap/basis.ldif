@@ -1,0 +1,23 @@
+dn: o=hfsdhfjkdh
+changetype: add
+objectclass: top
+objectclass: organization
+o: hfsdhfjkdh
+
+dn: ou=people,o=hfsdhfjkdh
+changetype: add
+objectclass: top
+objectclass: organizationalUnit
+ou: people
+
+dn: ou=groups,o=hfsdhfjkdh
+changetype: add
+objectclass: top
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=admin,o=hfsdhfjkdh
+changetype: add
+objectclass: top
+objectclass: organizationalUnit
+ou: admin

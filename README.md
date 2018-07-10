@@ -25,6 +25,8 @@ The corresponding PersistentVolumeClaims are
 
 Create those with
 
+```bash
  kubectl create -f storage.yaml
+```
 
 

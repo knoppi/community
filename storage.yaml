@@ -1,0 +1,119 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    namespace: ohl
+    name: ldap-data
+    labels:
+        type: local
+spec:
+    storageClassName: manual
+    capacity:
+        storage: 200Mi
+    accessModes:
+        - ReadWriteOnce
+    hostPath:
+        path: "/ohl/ldap/data"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    namespace: ohl
+    name: ldap-config
+    labels:
+        type: local
+spec:
+    storageClassName: manual
+    capacity:
+        storage: 100Mi
+    accessModes:
+        - ReadWriteOnce
+    hostPath:
+        path: "/ohl/ldap/config"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    namespace: ohl
+    name: drupal-db
+    labels:
+        type: local
+spec:
+    storageClassName: manual
+    capacity:
+        storage: 1Gi
+    accessModes:
+        - ReadWriteOnce
+    hostPath:
+        path: "/ohl/drupal/db"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    namespace: ohl
+    name: phpbb-db
+    labels:
+        type: local
+spec:
+    storageClassName: manual
+    capacity:
+        storage: 1Gi
+    accessModes:
+        - ReadWriteOnce
+    hostPath:
+        path: "/ohl/phpbb/db"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    namespace: ohl
+    name: claim-ldap-data
+spec:
+    storageClassName: manual
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 200Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    namespace: ohl
+    name: claim-ldap-config
+spec:
+    storageClassName: manual
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 100Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    namespace: ohl
+    name: claim-phpbb-db
+spec:
+    volumeName: phpbb-db
+    storageClassName: manual
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-drupal-db
+  namespace: ohl
+  labels:
+      app: drupal
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: manual
+  volumeName: drupal-db

@@ -35,7 +35,10 @@ spec:
                   name: ldap-config
               env:
                 - name: CONF_BASEDN
-                  value: "o=orklager"
+                  valueFrom:
+                      configMapKeyRef:
+                          name: ldap-config
+                          key: config_basedn
                 - name: CONF_ROOTPW
                   valueFrom:
                       secretKeyRef:

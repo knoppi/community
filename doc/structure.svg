@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created by diasvg.py -->
+<svg width="13.393cm" height="9.213cm" viewBox="30.043 0.993 13.393 9.213"
+ xmlns="http://www.w3.org/2000/svg"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+<!-- Layer: Hintergrund -->
+<g id="Hintergrund">
+<!-- Flowchart - Box -->
+<rect x="34.675" y="5.540" width="3.475" height="1.900" fill="#FFFFFF" stroke="#000000" stroke-width="0.100"  rx="0.000" />
+<text x="36.413" y="6.685"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+LDAP</text>
+<!-- Flowchart - Magnetic Disk -->
+<path stroke="#000000" fill="#FFFFFF" stroke-width="0.100"  d="M 34.081,8.237 C 34.533,7.962 34.759,7.870 35.211,7.870 C 35.663,7.870 35.889,7.962 36.341,8.237 L 36.341,9.704 C 35.889,9.979 35.663,10.070 35.211,10.070 C 34.759,10.070 34.533,9.979 34.081,9.704 L 34.081,8.237 z"/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 34.081,8.237 C 34.533,8.512 34.759,8.604 35.211,8.604 C 35.663,8.604 35.889,8.512 36.341,8.237 "/>
+<text x="35.211" y="9.304"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+config</text>
+<!-- Flowchart - Magnetic Disk -->
+<path stroke="#000000" fill="#FFFFFF" stroke-width="0.100"  d="M 36.880,8.272 C 37.280,7.997 37.480,7.906 37.880,7.906 C 38.280,7.906 38.480,7.997 38.880,8.272 L 38.880,9.739 C 38.480,10.014 38.280,10.106 37.880,10.106 C 37.480,10.106 37.280,10.014 36.880,9.739 L 36.880,8.272 z"/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 36.880,8.272 C 37.280,8.547 37.480,8.639 37.880,8.639 C 38.280,8.639 38.480,8.547 38.880,8.272 "/>
+<text x="37.880" y="9.339"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+data</text>
+<!-- Standard - Line -->
+<line x1="35.541" y1="7.491" x2="35.211" y2="7.870" stroke="#000000" stroke-width="0.100" />
+<!-- Standard - Line -->
+<line x1="37.447" y1="7.488" x2="37.880" y2="7.906" stroke="#000000" stroke-width="0.100" />
+<!-- Flowchart - Box -->
+<rect x="30.093" y="1.209" width="3.200" height="1.900" fill="#FF0000" stroke="#000000" stroke-width="0.100"  rx="0.000" />
+<text x="31.693" y="2.354"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+phpBB</text>
+<!-- Flowchart - Box -->
+<rect x="30.112" y="4.197" width="3.020" height="1.900" fill="#FFFFFF" stroke="#000000" stroke-width="0.100"  rx="0.000" />
+<text x="31.622" y="5.342"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+mysql</text>
+<!-- Flowchart - Magnetic Disk -->
+<path stroke="#000000" fill="#FFFFFF" stroke-width="0.100"  d="M 30.534,8.060 C 30.934,7.785 31.134,7.693 31.534,7.693 C 31.934,7.693 32.134,7.785 32.534,8.060 L 32.534,9.527 C 32.134,9.802 31.934,9.893 31.534,9.893 C 31.134,9.893 30.934,9.802 30.534,9.527 L 30.534,8.060 z"/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 30.534,8.060 C 30.934,8.335 31.134,8.427 31.534,8.427 C 31.934,8.427 32.134,8.335 32.534,8.060 "/>
+<text x="31.534" y="9.127"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+data</text>
+<!-- Standard - Line -->
+<line x1="31.622" y1="6.097" x2="31.534" y2="7.693" stroke="#000000" stroke-width="0.100" />
+<!-- Standard - Line -->
+<line x1="31.622" y1="4.197" x2="31.693" y2="3.109" stroke="#000000" stroke-width="0.100" />
+<!-- Flowchart - Box -->
+<rect x="40.148" y="1.043" width="3.238" height="1.900" fill="#FF0000" stroke="#000000" stroke-width="0.100"  rx="0.000" />
+<text x="41.767" y="2.188"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Drupal</text>
+<!-- Flowchart - Box -->
+<rect x="40.186" y="4.030" width="3.020" height="1.900" fill="#FFFFFF" stroke="#000000" stroke-width="0.100"  rx="0.000" />
+<text x="41.696" y="5.175"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+mysql</text>
+<!-- Flowchart - Magnetic Disk -->
+<path stroke="#000000" fill="#FFFFFF" stroke-width="0.100"  d="M 40.608,7.894 C 41.008,7.619 41.208,7.527 41.608,7.527 C 42.008,7.527 42.208,7.619 42.608,7.894 L 42.608,9.360 C 42.208,9.635 42.008,9.727 41.608,9.727 C 41.208,9.727 41.008,9.635 40.608,9.360 L 40.608,7.894 z"/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 40.608,7.894 C 41.008,8.169 41.208,8.260 41.608,8.260 C 42.008,8.260 42.208,8.169 42.608,7.894 "/>
+<text x="41.608" y="8.960"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+data</text>
+<!-- Standard - Line -->
+<line x1="41.696" y1="5.930" x2="41.608" y2="7.527" stroke="#000000" stroke-width="0.100" />
+<!-- Standard - Line -->
+<line x1="41.696" y1="4.030" x2="41.767" y2="2.943" stroke="#000000" stroke-width="0.100" />
+<!-- Standard - BezierLine -->
+<path stroke="#000000" fill="none" stroke-width="0.100" stroke-dasharray="0.09,0.09" d="M 33.516,2.159 C 33.591,2.159 35.430,2.154 35.544,5.540 "/>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="33.904,1.909 33.404,2.159 33.904,2.409 "/>
+<!-- Standard - BezierLine -->
+<path stroke="#000000" fill="none" stroke-width="0.100" stroke-dasharray="0.09,0.09" d="M 39.924,1.518 C 39.196,1.518 36.630,3.816 36.413,5.540 "/>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="39.536,1.768 40.036,1.518 39.536,1.268 "/>
+<!-- Standard - BezierLine -->
+<path stroke="#000000" fill="none" stroke-width="0.100" stroke-dasharray="0.09,0.09" d="M 37.448,5.392 C 38.206,4.718 39.012,2.193 40.148,2.468 "/>
+<polyline fill="none" stroke="#000000" stroke-width="0.100"  points="37.572,4.947 37.365,5.466 37.905,5.320 "/>
+</g>
+</svg>

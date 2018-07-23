@@ -11,6 +11,19 @@ spec:
         app: drupal-app
     type: LoadBalancer
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-drupal-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+  storageClassName: manual
+  volumeName: drupal-data
+---
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -31,13 +44,20 @@ spec:
       labels:
         app: drupal-app
     spec:
+      volumes:
+        - name: drupal-data
+          persistentVolumeClaim:
+              claimName: claim-drupal-data
       containers:
         - name: drupal-app
-          image: my_drupal:2
+          image: my_drupal:5
           imagePullPolicy: Never
           ports:
             - containerPort: 80
               name: "drupal"
+          volumeMounts:
+            - mountPath: "/drupal_data"
+              name: drupal-data
           env:
             - name: MYSQL_HOST
               value: drupal-db-intern

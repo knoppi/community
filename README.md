@@ -70,7 +70,7 @@ This step has to be done, too, if you fill LDAP with older data.
 It is convenient to store the organization as value in a ConfigMap for the automatization of the overall process and the master password in a Secret.
 
 ```bash
-kubectl create configmap ldap-config --from-literal=config_basedn=="o=$domainname"
+kubectl create configmap ldap-config --from-literal=config_basedn="o=$domainname"
 kubectl create secret generic ldap-pass --from-literal=ldap-passwd=${ldap_pass}
 ```
 
@@ -102,8 +102,8 @@ For the initial setup we should open a route so we can address it directly with 
 kubectl create service nodeport ldap --tcp=389:389
 export kub_ip=`kubectl config view | grep server | cut -d : -f 3 | cut -d / -f 3`
 export ldap_port=`kubectl describe svc ldap | grep NodePort: | awk '{print $3}' | cut -d / -f 1`
-ldapadd -x -h ${kub_ip} -p ${ldap_port} -D cn=admin,o=${domainname} -w ${ldap_pass} -f ldap/basis.ldif
-ldapadd -x -h ${kub_ip} -p ${ldap_port} -D cn=admin,o=${domainname} -w ${ldap_pass} -f ldap/fill.ldif
+ldapadd -x -h ${kub_ip} -p ${ldap_port} -D "cn=admin,o=$domainname" -w $ldap_pass -f ldap/basis.ldif
+ldapadd -x -h ${kub_ip} -p ${ldap_port} -D "cn=admin,o=$domainname" -w $ldap_pass -f ldap/fill.ldif
 ```
 
 Test that the entries have been added:
@@ -138,9 +138,11 @@ But, in particular, the LDAP configuration is a bit tedious.
 The commandline installation is performed with the following command:
 
 ```bash
-drush si standard --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name admin --account-pass ${LDAP_PASSWD}
+rm /var/www/html/sites/default/settings.php
+drush si --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=admin --account-pass=${LDAP_PASSWD} -v
 ```
 Of course you can also choose the browser based installation. 
+Note that you have to delete the settings file.
 If on the other hand the database is already set up you only need to have a settings file with the correct entries.
 The default definition simply performs this modification of `/var/www/html/sites/default/settings.php`, you only overwrite it when doing a manual install.
 Note that in this case you have to make the changes somehow persistent.
@@ -161,8 +163,8 @@ kubectl create configmap ldap-config --from-literal=config_basedn="o=$domainname
 kubectl create secret generic ldap-pass --from-literal=ldap-passwd=supersecret
 kubectl create service nodeport ldap --tcp=389:389
 export ldap_port=`kubectl describe svc ldap | grep NodePort: | awk '{print $3}' | cut -d / -f 1`
-ldapadd -x -h ${kub_ip} -p ${ldap_port} -D cn=admin,o=${domainname} -w ${ldap_pass} -f ldap/basis.ldif
-ldapadd -x -h ${kub_ip} -p ${ldap_port} -D cn=admin,o=${domainname} -w ${ldap_pass} -f ldap/fill.ldif
+ldapadd -x -h ${kub_ip} -p ${ldap_port} -D "cn=admin,o=$domainname" -w $ldap_pass -f ldap/basis.ldif
+ldapadd -x -h ${kub_ip} -p ${ldap_port} -D "cn=admin,o=$domainname" -w $ldap_pass -f ldap/fill.ldif
 kubectl delete service ldap
 
 # install and setup drupal

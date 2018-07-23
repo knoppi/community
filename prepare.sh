@@ -11,8 +11,18 @@ echo "Enter your LDAP-administration password"
 
 read -s ldap_pass
 
+echo "Enter your database password for the root user (drupal-db)"
+
+read -s drupal_db_root_passwd
+
+echo "Enter your database password for the Drupal user"
+
+read -s drupal_db_admin_passwd
+
 export domainname
 export ldap_pass
+export drupal_db_root_passwd
+export drupal_db_admin_passwd
 
 # Create files for raw LDAP directory
 # ##########################################################################

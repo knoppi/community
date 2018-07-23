@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: drupal-app
+spec:
+    ports:
+        - name: port
+          nodePort: 30380
+          port: 80
+    selector:
+        app: drupal-app
+    type: LoadBalancer
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+    name: drupal-app
+    labels:
+        app: drupal
+        tier: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drupal-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: drupal-app
+      labels:
+        app: drupal-app
+    spec:
+      containers:
+        - name: drupal-app
+          image: my_drupal:2
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+              name: "drupal"
+          env:
+            - name: MYSQL_HOST
+              value: drupal-db-intern
+            - name: MYSQL_DATABASE
+              value: drupaldb
+            - name: MYSQL_USER
+              value: drupaldbuser
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                  secretKeyRef:
+                      name: drupal-db-pass
+                      key: drupal-db-admin-passwd
+            - name: LDAP_PASSWD
+              valueFrom:
+                  secretKeyRef:
+                      name: ldap-pass
+                      key: ldap-passwd

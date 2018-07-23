@@ -3,6 +3,15 @@ Containerized community bundle using Drupal and phpBB backed by LDAP
 
 ![Structure diagram](doc/structure.svg)
 
+# Prerequisites
+
+Have the following tools installed:
+
+* ldap-utils
+* mysql-client
+
+Access to some k8s cluster.
+
 # Preparations
 
 You need some volumes to store user data and user content. In detail this is the storage for the LDAP server, for the forum and for the drupal page content. Plug-ins and Themes should be controlled via the Docker images.
@@ -23,8 +32,8 @@ kubectl config set-context $(kubectl config current-context) --namespace=$domain
 
 Setting up the storage is a highly individual aspect. 
 Make sure you adapt the contents of this repository to your needs and your environment. 
-The example case uses local paths. 
-In production setups cloud storage might be used.
+The example case uses local paths (`hostPath`). 
+In production setups this is usually not available and cloud storage should be used.
 
 The LDAP-server needs two folder: one for the config and one for the actual data. 
 Additionally the database instances for each Drupal and phpBB also need storage. 
@@ -43,11 +52,13 @@ The corresponding PersistentVolumeClaims are
 * claim-drupal-db
 * claim-phpbb-db
 
-Create those with
+Create the PersistentVolumes with
 
 ```bash
 kubectl create -f storage.yaml
 ```
+
+The claims are made from the same files as the deployments.
 
 ## LDAP database
 
@@ -60,7 +71,7 @@ It is convenient to store the organization as value in a ConfigMap for the autom
 
 ```bash
 kubectl create configmap ldap-config --from-literal=config_basedn=="o=$domainname"
-kubectl create secret generic ldap-pass --from-literal=ldap-passwd=supersecret
+kubectl create secret generic ldap-pass --from-literal=ldap-passwd=${ldap_pass}
 ```
 
 The entries will later be controlled from Drupal.
@@ -102,21 +113,62 @@ ldapsearch -h ${kub_ip} -p ${ldap_port} -D cn=admin,o=${domainname} -w ${ldap_pa
 
 Note that the entry type `inetOrgPerson` suits very well the needs of both Drupal and phpBB but other choices might apply as well depending on which other services should be attached to the core.
 
+# Drupal
+
+The Drupal installation consists of a MySQL database with an attached storage and the Drupal container.
+They have to started in any case:
+
+```bash
+kubectl create secret generic drupal-db-pass --from-literal=drupal-db-root-passwd=${drupal_db_root_passwd} --from-literal=drupal-db-admin-passwd=${drupal_db_admin_passwd}
+kubectl create -f deployment_drupal_db.yaml
+kubectl create -f deployment_drupal_app.yaml
+```
+
+## Installation
+
+If Drupal is not yet set up you have to
+
+1. install the Drupal site
+1. setup Drupal to interact with the LDAP server
+
+This is a bit hacky, since I currently only see the way of directly logging into a Drupal container and starting a prepared script which is part of my Drupal container.
+You yould do this by hand, so I also give instructions and an explanation how to do it.
+But, in particular, the LDAP configuration is a bit tedious.
+
+The commandline installation is performed with the following command:
+
+```bash
+drush si standard --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name admin --account-pass ${LDAP_PASSWD}
+```
+Of course you can also choose the browser based installation. 
+If on the other hand the database is already set up you only need to have a settings file with the correct entries.
+The default definition simply performs this modification of `/var/www/html/sites/default/settings.php`, you only overwrite it when doing a manual install.
+Note that in this case you have to make the changes somehow persistent.
+
+
 # tl;dr
 
 ```bash
+# preparations
 . prepare.sh
 kubectl create namespace $domainname
 kubectl config set-context $(kubectl config current-context) --namespace=$domainname
 kubectl create -f storage.yaml
+export kub_ip=`kubectl config view | grep server | cut -d : -f 3 | cut -d / -f 3`
+
+# install and setup ldap
 kubectl create configmap ldap-config --from-literal=config_basedn="o=$domainname"
 kubectl create secret generic ldap-pass --from-literal=ldap-passwd=supersecret
 kubectl create service nodeport ldap --tcp=389:389
-export kub_ip=`kubectl config view | grep server | cut -d : -f 3 | cut -d / -f 3`
 export ldap_port=`kubectl describe svc ldap | grep NodePort: | awk '{print $3}' | cut -d / -f 1`
 ldapadd -x -h ${kub_ip} -p ${ldap_port} -D cn=admin,o=${domainname} -w ${ldap_pass} -f ldap/basis.ldif
 ldapadd -x -h ${kub_ip} -p ${ldap_port} -D cn=admin,o=${domainname} -w ${ldap_pass} -f ldap/fill.ldif
 kubectl delete service ldap
+
+# install and setup drupal
+kubectl create secret generic drupal-db-pass --from-literal=drupal-db-pass=${drupal_db_pass}
+kubectl create -f deployment_drupal_db.yaml
+kubectl create -f deployment_drupal_app.yaml
 ```
 
 # Migrate from an old phpBB database

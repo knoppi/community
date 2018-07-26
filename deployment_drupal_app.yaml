@@ -50,8 +50,8 @@ spec:
               claimName: claim-drupal-data
       containers:
         - name: drupal-app
-          image: my_drupal:5
-          imagePullPolicy: Never
+          image: knoppi/drupal:7-2
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
               name: "drupal"

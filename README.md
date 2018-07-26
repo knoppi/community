@@ -131,21 +131,63 @@ If Drupal is not yet set up you have to
 1. install the Drupal site
 1. setup Drupal to interact with the LDAP server
 
-This is a bit hacky, since I currently only see the way of directly logging into a Drupal container and starting a prepared script which is part of my Drupal container.
-You yould do this by hand, so I also give instructions and an explanation how to do it.
-But, in particular, the LDAP configuration is a bit tedious.
-
-The commandline installation is performed with the following command:
+This is a bit hacky, since I currently only see the way of directly logging into a Drupal container and starting a prepared script.
+Afterwards I execute a SQL query and manually perform HTTP queries.
+You could do this by hand, so I also give instructions and an explanation how to do it.
+In particular, the LDAP configuration is a bit tedious.
 
 ```bash
-rm /var/www/html/sites/default/settings.php
-drush si --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=admin --account-pass=${LDAP_PASSWD} -v
+export drupal_app_pod=`kubectl get pod | grep drupal-app | awk '{print $1}' | head -n1`
+export drupal_db_pod=`kubectl get pod | grep drupal-db | awk '{print $1}' | head -n1`
+kubectl exec $drupal_app_pod -it  installation.sh
+cat setup_drupal_database.sql | kubectl exec $drupal_db_pod -it -- mysql --password=$drupal_db_root_passwd drupaldb
+. postpare.sh
 ```
+
+The first kubectl exec calls drush, the Drupal shell administation tool, which performs the basic installation and installs the required modules.
+If you ran `. prepare.sh` it created `setup_drupal_database.sql` with the correct domainname already included.
+Its content is
+
+```sql
+INSERT INTO ldap_servers
+    (sid, name, status, ldap_type, 
+     address, port, tls, followrefs, 
+     bind_method, binddn, bindpw, 
+     basedn, user_attr, account_name_attr, 
+     mail_attr, user_dn_expression )
+VALUES
+    ("users", "Users", 1, "openldap", 
+     "ldap-intern", 389, 0, 0, 1, 
+     "cn=admin,o=orklager", "geheim", 
+     "a:1:{i:0;s:10:\"o=$domainname\";}", 
+     "cn", "cn", "mail", 
+     "cn=%username,%basedn");
+```
+
+Note that `$domainname` has to be replaced by the correct value.
+
+If you made some errors reset Drupal to the initial state by dropping the database and recreating an empty one:
+
+```bash
+echo "drop database drupaldb;" | kubectl exec $drupal_db_pod -it -- mysql --password=$drupal_db_root_passwd
+echo "create database drupaldb;" | kubectl exec $drupal_db_pod -it -- mysql --password=$drupal_db_root_passwd
+```
+
+The setup of the mapping between Drupal users and LDAP entries could again be done by hand.
+An example of the correct settings is in the following picture (click to enlarge):
+
+[<img alt="Screenshot of the LDAP users settings" src="doc/settings_ldap_provisioning.png" height="400px">](doc/settings_ldap_provisioning.png)
+
+For me using `drush` did not really work out, so I set up some calls to `curl` which to the trick. They are collected in the file [setup_ldap.sh](setup_ldap.sh).
 Of course you can also choose the browser based installation. 
-Note that you have to delete the settings file.
-If on the other hand the database is already set up you only need to have a settings file with the correct entries.
-The default definition simply performs this modification of `/var/www/html/sites/default/settings.php`, you only overwrite it when doing a manual install.
-Note that in this case you have to make the changes somehow persistent.
+When calling the script make sure you have the environmental variable set correctly (from `prepare.sh`).
+
+At this point we have set up the LDAP server and a Drupal installation that can communicate with each other.
+LDAP gets managed via Drupal and the system is ripe for other additions.
+
+### TODO
+
+How should I add thumbnail avatars?
 
 
 # tl;dr
@@ -168,7 +210,7 @@ ldapadd -x -h ${kub_ip} -p ${ldap_port} -D "cn=admin,o=$domainname" -w $ldap_pas
 kubectl delete service ldap
 
 # install and setup drupal
-kubectl create secret generic drupal-db-pass --from-literal=drupal-db-pass=${drupal_db_pass}
+kubectl create secret generic drupal-db-pass --from-literal=drupal-db-root-passwd=${drupal_db_root_passwd} --from-literal=drupal-db-admin-passwd=${drupal_db_admin_passwd}
 kubectl create -f deployment_drupal_db.yaml
 kubectl create -f deployment_drupal_app.yaml
 ```

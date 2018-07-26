@@ -69,6 +69,22 @@ do
     echo "mail: user$i@$domainname.org" >> ldap/fill.ldif
 done
 
+# Config files for drupal
+# ##########################################################################
+echo 'INSERT INTO ldap_servers' > setup_drupal_database.sql
+echo '    (sid, name, status, ldap_type, ' >> setup_drupal_database.sql
+echo '     address, port, tls, followrefs, ' >> setup_drupal_database.sql
+echo '     bind_method, binddn, bindpw, ' >> setup_drupal_database.sql
+echo '     basedn, user_attr, account_name_attr, ' >> setup_drupal_database.sql
+echo '     mail_attr, user_dn_expression )' >> setup_drupal_database.sql
+echo 'VALUES' >> setup_drupal_database.sql
+echo '    ("users", "Users", 1, "openldap", ' >> setup_drupal_database.sql
+echo '     "ldap-intern", 389, 0, 0, 1, ' >> setup_drupal_database.sql
+echo '     "cn=admin,o='$domainname'", "'$ldap_pass'", ' >> setup_drupal_database.sql
+echo '     "a:1:{i:0;s:10:\"o='$domainname'\";}", ' >> setup_drupal_database.sql
+echo '     "cn", "cn", "mail", ' >> setup_drupal_database.sql
+echo '     "cn=%username,%basedn");' >> setup_drupal_database.sql
+
 # Prepare kubernetes
 # ##########################################################################
 

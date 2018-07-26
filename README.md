@@ -141,7 +141,7 @@ export drupal_app_pod=`kubectl get pod | grep drupal-app | awk '{print $1}' | he
 export drupal_db_pod=`kubectl get pod | grep drupal-db | awk '{print $1}' | head -n1`
 kubectl exec $drupal_app_pod -it  installation.sh
 cat setup_drupal_database.sql | kubectl exec $drupal_db_pod -it -- mysql --password=$drupal_db_root_passwd drupaldb
-. postpare.sh
+. setup_ldap.sh
 ```
 
 The first kubectl exec calls drush, the Drupal shell administation tool, which performs the basic installation and installs the required modules.
@@ -158,7 +158,7 @@ INSERT INTO ldap_servers
 VALUES
     ("users", "Users", 1, "openldap", 
      "ldap-intern", 389, 0, 0, 1, 
-     "cn=admin,o=orklager", "geheim", 
+     "cn=admin,o=$domainname", "geheim", 
      "a:1:{i:0;s:10:\"o=$domainname\";}", 
      "cn", "cn", "mail", 
      "cn=%username,%basedn");
@@ -213,6 +213,11 @@ kubectl delete service ldap
 kubectl create secret generic drupal-db-pass --from-literal=drupal-db-root-passwd=${drupal_db_root_passwd} --from-literal=drupal-db-admin-passwd=${drupal_db_admin_passwd}
 kubectl create -f deployment_drupal_db.yaml
 kubectl create -f deployment_drupal_app.yaml
+export drupal_app_pod=`kubectl get pod | grep drupal-app | awk '{print $1}' | head -n1`
+export drupal_db_pod=`kubectl get pod | grep drupal-db | awk '{print $1}' | head -n1`
+kubectl exec $drupal_app_pod -it  installation.sh
+cat setup_drupal_database.sql | kubectl exec $drupal_db_pod -it -- mysql --password=$drupal_db_root_passwd drupaldb
+. setup_ldap.sh
 ```
 
 # Migrate from an old phpBB database
